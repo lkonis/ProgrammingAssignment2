@@ -1,25 +1,27 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
-## Write a short comment describing this function
-## This function create an object of a special matrix that can cache its inverse
-## It allows setting the matrix or it's inverse
+## This function creates a 'special matrix' object that can cache its inverse
+## The function itself returns a list of set() and get() functions that allow setting  (and reading) the matrix or it's inverse
 makeCacheMatrix <- function(x = matrix()) {
   # initialize the inverse of matrix to null
   invM <- NULL
-  # whenever matrix content is changed, reset the inverse value (that is, flush the cache)
+  
+  # set new value to the matrix
+  # whenever the matrix content is changed, reset the inverse value (that is, flush the cache)
   set <- function(y) {
     x <<- y
     invM <<- NULL
   }
-  # with this we get the current matrix
+  # read the current matrix's value
   get <- function() {
     x
   }
-  # with this we call the special inverse function
+  # set new value to the inverse-matix field
+  # typically we will call cacheSolve() to set this field
   setInv <- function(inv) invM <<- inv
   
-  # 
+  # reading the inverse-matrix
   getInv <- function() invM
   
   # this defines the interface for object of this class
@@ -31,25 +33,23 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## Write a short comment describing this function
 # This function gets a special matrix object of class makeCacheMatrix as input
 #    it assumes the matrix is reversible
-# The output y is the inverse matrix such that the product of input and output:
-# y %*% x   will give the unit matrix of same dimension (with 'ones' on its diagonal)
+# The output is the inverse matrix such that the product of input and output:
+# y %*% x   will give the unit matrix  (with 'ones' along its diagonal) of same dimension
 
 cacheSolve <- function(x, ...) {
-  ## Return a matrix that is the inverse of 'x'
-  ## check validity of matrix (non empty)
+  # check validity of matrix (non empty)
   if (all(is.na(x$get())))
   {
     return(NULL)
   }
-  ## check if already in cache
+  # check if not already in cache
   if (is.null(x$getInv()))
   {
-    # inverse the input
+    # inverse the input and return
     return(solve(x$get()))
   }
-  ## if in cache, return existing value
+  # if in cache, return existing value
   return(x$getInv())
 }
